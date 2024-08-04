@@ -3,34 +3,34 @@ import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 interface AuthContextType {
-  user: User | null;
-  login: (data: User) => Promise<void>;
+  apiKey: string | null;
+  login: (data: string) => Promise<void>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useLocalStorage<User | null>("user", null);
+  const [apiKey, setApiKey] = useLocalStorage<string | null>("apiKey", null);
   const navigate = useNavigate();
 
-  const login = async (data: User) => {
-    setUser(data);
-    navigate("/profile");
+  const login = async (data: string) => {
+    setApiKey(data);
+    navigate("/");
   };
 
   const logout = () => {
-    setUser(null);
+    setApiKey(null);
     navigate("/", { replace: true });
   };
 
   const value = useMemo<AuthContextType>(
     () => ({
-      user,
+      apiKey,
       login,
       logout,
     }),
-    [user]
+    [apiKey]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
