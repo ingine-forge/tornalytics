@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
+import { fetchApiKeyLevel, fetchUserProfile } from "@/actions/api.actions";
+import { useState } from "react";
+import { RotateCw } from "lucide-react";
 
 const formSchema = z.object({
   apiKey: z.string().length(16, {
@@ -23,6 +26,7 @@ const formSchema = z.object({
 
 const Login = () => {
   const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,8 +36,19 @@ const Login = () => {
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
-    await login(data.apiKey);
+    setIsLoading(true);
+    try {
+      const apiKeyData = await fetchApiKeyLevel(data.apiKey);
+
+      if (apiKeyData.access_level > 2) {
+        const user = await fetchUserProfile(data.apiKey);
+        await login({ ...apiKeyData, apiKey: data.apiKey }, user);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Error checking API Key:", error);
+      setIsLoading(false);
+    }
   }
   return (
     <div className="flex w-full h-dvh items-center justify-center flex-col">
@@ -71,8 +86,15 @@ const Login = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
-            Submit
+          <Button type="submit" className={`w-full`} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <RotateCw className="w-4 h-4 mr-2 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              "Submit"
+            )}
           </Button>
         </form>
       </Form>
