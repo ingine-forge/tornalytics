@@ -6,6 +6,7 @@ import NoUserRoute from "@/layouts/NoUserRoute";
 import ProtectedRoutes from "@/layouts/ProtectedLayout";
 import Login from "@/pages/Login";
 import Home from "@/pages/Home";
+import Targets from "./pages/target/Target";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           </Route>
           <Route path="/" element={<ProtectedRoutes />}>
             <Route index element={<Home />} />
+            <Route path="/targets" element={<Targets />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

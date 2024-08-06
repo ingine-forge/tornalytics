@@ -11,8 +11,11 @@ export const fetchApiKeyLevel = async (apiKey: string) => {
   return data;
 };
 
-export const fetchUserProfile = async (apiKey: string) => {
-  const url = `https://api.torn.com/user/?key=${apiKey}&comment=Tornalytics&selections=profile`;
+export const fetchUserProfile = async (
+  apiKey: string,
+  userID: string | null = null
+) => {
+  const url = `https://api.torn.com/user/${userID}?key=${apiKey}&comment=TornAPI&selections=profile`;
   const response = await fetch(url);
 
   const data: User = await response.json();

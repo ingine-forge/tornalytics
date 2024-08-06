@@ -19,10 +19,10 @@ const ProtectedRoutes = () => {
   return (
     <>
       <div className="fixed bottom-6 right-6 flex flex-col items-center justify-center gap-3">
+        <ModeToggle />
         <Button variant="outline" size="icon" onClick={handleLogout}>
           <LogOut />
         </Button>
-        <ModeToggle />
       </div>
 
       <Outlet />
